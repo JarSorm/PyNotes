@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 class StrAttr:
     """Дескриптор данных для атрибутов"""
+
     def __set_name__(self, owner, name):
         self.name = '__' + name
 
@@ -15,6 +16,7 @@ class StrAttr:
         setattr(instance, self.name, value)
 
     """Проверка типа данных для переменной wheels"""
+
     @classmethod
     def verify_int(cls, value):
         if not isinstance(value, int):
@@ -113,18 +115,18 @@ class Moped(MeansOfTransport):
 
 class Calculator:
     def __init__(self, a: (int, float)):
-        self.__a = a
+        self.a = a
 
     def add(self, other: (int, float)):
-        return self.__a + other
+        return self.a + other
 
 
 class StrngCalculator(Calculator):
-    def __init__(self, a: str):
-        super().__init__(a)
-
-    def __add__(self, other: str):
-        return self.add(other)
+    def add(self, other):
+        if isinstance(self.a, str) or isinstance(other, str):
+            return str(self.a) + str(other)
+        else:
+            return super().add(other)
 
 
 class Animals(ABC):
@@ -135,29 +137,26 @@ class Animals(ABC):
 
 
 class Cat(Animals):
-
     def voice(self):
         print('Кошка кричит "Мяу"')
 
 
 class Dog(Animals):
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, name, breed, color, age):
         if not hasattr(cls, 'instance'):
             cls.instance = super(Dog, cls).__new__(cls)
         return cls.instance
 
     def __init__(self, name, breed, color, age):
-        self.__name = name
-        self.__breed = breed
-        self.__color = color
-        self.__age = age
+        self.name = name
+        self.breed = breed
+        self.color = color
+        self.age = age
 
     def voice(self):
         print('Собака говорит "Гав"')
 
     def __str__(self):
-        return f'{self.__name} + {self.__breed} + {self.__color} + {self.__age}'
+        return f'{self.name} + {self.breed} + {self.color} + {self.age}'
 
 
-a = MeansOfTransport('honda', "red", 4)
-print(a.__dict__)
